@@ -7,6 +7,18 @@ defmodule ElixirInterviewStarter.CalibrationSession do
 
   @type t() :: %__MODULE__{}
 
-  # precheck1, prechecked1, precheck2, prechecked2, calibrate, calibrated
+  @doc """
+  The user_email field is a string representing the email address of the user who owns
+  the calibration session.
+
+  The step field is a string representing the current step of the calibration session.
+  The possible values are:
+    - "precheck1"
+    - "prechecked1"
+    - "precheck2"
+    - "prechecked2"
+    - "calibration"
+    - "calibrated"
+  """
   defstruct [:user_email, step: "precheck1"]
 end

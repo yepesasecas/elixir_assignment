@@ -7,5 +7,6 @@ defmodule ElixirInterviewStarter.CalibrationSession do
 
   @type t() :: %__MODULE__{}
 
+  # precheck1, prechecked1, precheck2, prechecked2, calibrate, calibrated
   defstruct [:user_email, step: "precheck1"]
 end

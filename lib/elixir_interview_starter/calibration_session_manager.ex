@@ -31,15 +31,20 @@ defmodule ElixirInterviewStarter.CalibrationSessionManager do
     if Map.has_key?(state, user_email) do
       {:reply, {:error, :already_in_progress}, state}
     else
-      {:ok, pid} = DynamicSupervisor.start_child(App.ProcessSupervisor, {ElixirInterviewStarter.CalibrationSessionProcess, user_email})
-      state = Map.put(state, user_email, pid)
-      {:reply, :ok, state}
+      {:ok, session_pid} =
+        DynamicSupervisor.start_child(
+          App.ProcessSupervisor,
+          {ElixirInterviewStarter.CalibrationSessionProcess, user_email}
+        )
+
+      state = Map.put(state, user_email, session_pid)
+      {:reply, {:ok, session_pid}, state}
     end
   end
 
   @impl true
   def handle_call({:get_current_session, user_email}, _from, state) do
-    current_session = Map.get(state, user_email)
-    {:reply, {:ok, current_session}, state}
+    session_pid = Map.get(state, user_email)
+    {:reply, {:ok, session_pid}, state}
   end
 end

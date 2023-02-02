@@ -4,6 +4,8 @@ defmodule ElixirInterviewStarter do
   """
 
   alias ElixirInterviewStarter.CalibrationSession
+  alias ElixirInterviewStarter.CalibrationSessionManager
+  alias ElixirInterviewStarter.CalibrationSessionProcess
 
   @spec start(user_email :: String.t()) :: {:ok, CalibrationSession.t()} | {:error, String.t()}
   @doc """
@@ -12,8 +14,14 @@ defmodule ElixirInterviewStarter do
 
   If the user already has an ongoing `CalibrationSession`, returns an error.
   """
-  def start(_user_email) do
-    {:ok, %CalibrationSession{}}
+  def start(user_email) do
+    case CalibrationSessionManager.start_session(user_email) do
+      {:ok, pid} ->
+        {:ok, CalibrationSessionProcess.get_session(pid)}
+
+      {:error, :already_in_progress} ->
+        {:error, "User already has an ongoing calibration session"}
+    end
   end
 
   @spec start_precheck_2(user_email :: String.t()) ::
@@ -25,15 +33,27 @@ defmodule ElixirInterviewStarter do
   with precheck 1, or their calibration session has already completed precheck 2, returns
   an error.
   """
-  def start_precheck_2(_user_email) do
-    {:ok, %CalibrationSession{}}
+  def start_precheck_2(user_email) do
+    case CalibrationSessionManager.get_current_session(user_email) do
+      {:ok, nil} ->
+        {:error, "User has no ongoing calibration session"}
+
+      {:ok, pid} ->
+        CalibrationSessionProcess.start_precheck_2(pid)
+    end
   end
 
   @spec get_current_session(user_email :: String.t()) :: {:ok, CalibrationSession.t() | nil}
   @doc """
   Retrieves the ongoing `CalibrationSession` for the provided user, if they have one
   """
-  def get_current_session(_user_email) do
-    {:ok, nil}
+  def get_current_session(user_email) do
+    case CalibrationSessionManager.get_current_session(user_email) do
+      {:ok, nil} ->
+        nil
+
+      {:ok, pid} ->
+        {:ok, CalibrationSessionProcess.get_session(pid)}
+    end
   end
 end

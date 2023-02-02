@@ -19,6 +19,7 @@ defmodule ElixirInterviewStarter.CalibrationSession do
     - "prechecked2"
     - "calibration"
     - "calibrated"
+    - "fail_session
   """
   defstruct [:user_email, step: "precheck1"]
 end

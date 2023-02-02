@@ -2,7 +2,7 @@ defmodule ElixirInterviewStarter.CalibrationSessionProcess do
   use GenServer
 
   @moduledoc """
-  CalibrationSessionProcess is a GenServer that manages the state of a calibration session.
+  CalibrationSessionProcess is a GenServer that manages the state of a calibration session
   """
 
   alias ElixirInterviewStarter.DeviceMessages

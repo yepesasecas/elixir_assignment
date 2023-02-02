@@ -5,14 +5,18 @@ defmodule ElixirInterviewStarterTest do
   doctest ElixirInterviewStarter
 
   test "it can go through the whole flow happy path" do
+    # start new CalibrationSession
     assert {:ok, %CalibrationSession{step: "precheck1"}} = ElixirInterviewStarter.start("happy_user@test.com")
-    #  wait device to precheck1
+
+    #  wait device to precheck1, validate precheck1 and start precheck2
     Process.sleep(4000)
     assert {:ok, %CalibrationSession{step: "prechecked1"}} = ElixirInterviewStarter.get_current_session("happy_user@test.com")
     assert {:ok, %CalibrationSession{step: "precheck2"}} = ElixirInterviewStarter.start_precheck_2("happy_user@test.com")
-    # wait device to precheck2
+
+    # wait device to precheck2, validate precheck2 and automatically start calibration
     Process.sleep(4000)
     assert {:ok, %CalibrationSession{step: "prechecked2"}} = ElixirInterviewStarter.get_current_session("happy_user@test.com")
+
     # wait device to calibrate
     Process.sleep(4000)
     assert {:ok, %CalibrationSession{step: "calibrated"}} = ElixirInterviewStarter.get_current_session("happy_user@test.com")
@@ -39,7 +43,7 @@ defmodule ElixirInterviewStarterTest do
 
   test "start_precheck_2/1 returns an error if the provided user's ongoing calibration session is not done with precheck 1" do
     ElixirInterviewStarter.start("user4@test.com")
-    assert {:error, _message} = ElixirInterviewStarter.start_precheck_2("user3@test.com")
+    assert {:error, _message} = ElixirInterviewStarter.start_precheck_2("user4@test.com")
   end
 
   test "start_precheck_2/1 returns an error if the provided user's ongoing calibration session is already done with precheck 2" do

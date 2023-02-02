@@ -6,20 +6,29 @@ defmodule ElixirInterviewStarterTest do
 
   test "it can go through the whole flow happy path" do
     # start new CalibrationSession
-    assert {:ok, %CalibrationSession{step: "precheck1"}} = ElixirInterviewStarter.start("happy_user@test.com")
+    assert {:ok, %CalibrationSession{step: "precheck1"}} =
+             ElixirInterviewStarter.start("happy_user@test.com")
 
     #  wait device to precheck1, validate precheck1 and start precheck2
     Process.sleep(4000)
-    assert {:ok, %CalibrationSession{step: "prechecked1"}} = ElixirInterviewStarter.get_current_session("happy_user@test.com")
-    assert {:ok, %CalibrationSession{step: "precheck2"}} = ElixirInterviewStarter.start_precheck_2("happy_user@test.com")
+
+    assert {:ok, %CalibrationSession{step: "prechecked1"}} =
+             ElixirInterviewStarter.get_current_session("happy_user@test.com")
+
+    assert {:ok, %CalibrationSession{step: "precheck2"}} =
+             ElixirInterviewStarter.start_precheck_2("happy_user@test.com")
 
     # wait device to precheck2, validate precheck2 and automatically start calibration
     Process.sleep(4000)
-    assert {:ok, %CalibrationSession{step: "prechecked2"}} = ElixirInterviewStarter.get_current_session("happy_user@test.com")
+
+    assert {:ok, %CalibrationSession{step: "prechecked2"}} =
+             ElixirInterviewStarter.get_current_session("happy_user@test.com")
 
     # wait device to calibrate
     Process.sleep(4000)
-    assert {:ok, %CalibrationSession{step: "calibrated"}} = ElixirInterviewStarter.get_current_session("happy_user@test.com")
+
+    assert {:ok, %CalibrationSession{step: "calibrated"}} =
+             ElixirInterviewStarter.get_current_session("happy_user@test.com")
   end
 
   test "start/1 creates a new calibration session and starts precheck 1" do
@@ -34,11 +43,14 @@ defmodule ElixirInterviewStarterTest do
   test "start_precheck_2/1 starts precheck 2" do
     ElixirInterviewStarter.start("user3@test.com")
     Process.sleep(4000)
-    assert {:ok, %CalibrationSession{}} = ElixirInterviewStarter.start_precheck_2("user3@test.com")
+
+    assert {:ok, %CalibrationSession{}} =
+             ElixirInterviewStarter.start_precheck_2("user3@test.com")
   end
 
   test "start_precheck_2/1 returns an error if the provided user does not have an ongoing calibration session" do
-    assert {:error, _message} = ElixirInterviewStarter.start_precheck_2("non_existing_user@test.com")
+    assert {:error, _message} =
+             ElixirInterviewStarter.start_precheck_2("non_existing_user@test.com")
   end
 
   test "start_precheck_2/1 returns an error if the provided user's ongoing calibration session is not done with precheck 1" do
@@ -55,7 +67,9 @@ defmodule ElixirInterviewStarterTest do
 
   test "get_current_session/1 returns the provided user's ongoing calibration session" do
     ElixirInterviewStarter.start("user6@test.com")
-    assert {:ok, %CalibrationSession{}} = ElixirInterviewStarter.get_current_session("user6@test.com")
+
+    assert {:ok, %CalibrationSession{}} =
+             ElixirInterviewStarter.get_current_session("user6@test.com")
   end
 
   test "get_current_session/1 returns nil if the provided user has no ongoing calibrationo session" do

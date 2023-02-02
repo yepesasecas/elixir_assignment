@@ -37,7 +37,11 @@ defmodule ElixirInterviewStarter.CalibrationSessionProcess do
   end
 
   @impl true
-  def handle_call(:start_precheck_2, _from, %CalibrationSession{step: "prechecked1", user_email: user_email} = state) do
+  def handle_call(
+        :start_precheck_2,
+        _from,
+        %CalibrationSession{step: "prechecked1", user_email: user_email} = state
+      ) do
     DeviceMessages.send(user_email, "startPrecheck2", self())
     Process.send_after(self(), {:ok, "precheck2Timeout"}, 30_000)
     state = %CalibrationSession{state | step: "precheck2"}
@@ -45,7 +49,8 @@ defmodule ElixirInterviewStarter.CalibrationSessionProcess do
   end
 
   def handle_call(:start_precheck_2, _from, %CalibrationSession{step: _step} = state) do
-    {:reply, {:error, "device is not ready to precheck_2 or device has completed precheck_2 "}, state}
+    {:reply, {:error, "device is not ready to precheck_2 or device has completed precheck_2 "},
+     state}
   end
 
   @impl true
